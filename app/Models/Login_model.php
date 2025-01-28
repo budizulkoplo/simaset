@@ -19,14 +19,10 @@ class Login_model extends Model
             ->where('username', $username)
             ->where('password', sha1($password));  // Pastikan menggunakan enkripsi password yang sesuai
 
-        // UNION dengan tabel muzaki
-        $builder2 = $db->table('muzaki')
-            ->select('id as id, nama, username, password, foto, "muzaki" as akses_level, idranting')
-            ->where('username', $username)
-            ->where('password', sha1($password));  // Pastikan menggunakan enkripsi password yang sesuai
+        
 
         // Gabungkan hasilnya
-        $query = $builder->getCompiledSelect() . ' UNION ' . $builder2->getCompiledSelect();
+        $query = $builder->getCompiledSelect();
         $result = $db->query($query);
         
         return $result->getRowArray();  // Mengembalikan hasil sebagai array

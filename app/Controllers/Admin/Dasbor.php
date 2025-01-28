@@ -20,12 +20,9 @@ class Dasbor extends BaseController
 
     // Ambil data dasbor
     $dataDasbor = [
-        'muzaki' => $m_dasbor->muzaki(),
+        
         'user' => $m_dasbor->user(),
-        'suksesTransaksi' => $m_dasbor->suksestransaksi(),
-        'pendingTransaksi' => $m_dasbor->pendingtransaksi(),
-        'wakaf' => $m_dasbor->wakaf(),
-        'programLazis' => $m_dasbor->programlazis(),
+        
     ];
 
     // Ambil data rekening

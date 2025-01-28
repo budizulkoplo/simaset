@@ -48,7 +48,7 @@ class App extends BaseConfig
 
 	 */
 
-	public $baseURL = 'http://localhost/aset';
+	public $baseURL = 'http://localhost/simaset';
 
 
 
