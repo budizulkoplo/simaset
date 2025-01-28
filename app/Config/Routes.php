@@ -15,7 +15,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
+$routes->setDefaultController('Login');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
@@ -29,14 +29,8 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Login::index');
 
-// Route for adding majlis for a specific cabang
-$routes->post('admin/cabang/add-majlis/(:num)', 'Admin\Cabang::addMajlis/$1');
-
-// Routes for Majlis
-$routes->get('admin/majlis', 'Admin\Majlis::index');
-$routes->post('admin/majlis/manage/(:num)', 'Admin\Majlis::manage/$1');
 
 
 

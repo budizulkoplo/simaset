@@ -48,7 +48,7 @@ class App extends BaseConfig
 
 	 */
 
-	public $baseURL = 'http://localhost/ziska';
+	public $baseURL = 'http://localhost/aset';
 
 
 
