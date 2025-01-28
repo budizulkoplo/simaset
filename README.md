@@ -1,3 +1,3 @@
-# ZISKA
-Aplikasi Zakat dan Wakaf Lazismu Cabang
+# SIM ASET
+Sistem Manajemen Aset
 
