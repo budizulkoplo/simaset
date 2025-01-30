@@ -25,13 +25,51 @@ class Dataaset extends BaseController
     public function index()
     {
         checklogin();
+        $barangModel = new \App\Models\Barang_model();
+        $barang = $barangModel->findAll();
+
+        // Ambil data lokasi dari model Lokasiaset_model
+        $lokasiModel = new \App\Models\Lokasiaset_model();
+        $lokasi = $lokasiModel->findAll();
+
+        // Ambil data kelompok dari model Kelompokekonomis_model
+        $kelompokModel = new \App\Models\Kelompokekonomis_model();
+        $kelompok = $kelompokModel->findAll();
 
         $data = [
             'title' => 'Manajemen Data Aset',
-            'dataaset' => $this->dataasetModel->findAll(),
+            'barang' => $barang, // Kirim data barang ke view
+            'lokasi' => $lokasi, // Kirim data lokasi ke view
+            'kelompok' => $kelompok, // Kirim data kelompok ke view
+            'dataaset' => $this->dataasetModel->getDataasetWithRelations(),
             'content' => 'admin/dataaset/index',
         ];
 
+        echo view('admin/layout/wrapper', $data);
+    }
+
+    public function create()
+    {
+        checklogin();  // Pastikan pengguna sudah login
+        $barangModel = new \App\Models\Barang_model();
+        $barang = $barangModel->findAll();
+
+        // Ambil data lokasi dari model Lokasiaset_model
+        $lokasiModel = new \App\Models\Lokasiaset_model();
+        $lokasi = $lokasiModel->findAll();
+
+        // Ambil data kelompok dari model Kelompokekonomis_model
+        $kelompokModel = new \App\Models\Kelompokekonomis_model();
+        $kelompok = $kelompokModel->findAll();
+
+        $data = [
+            'title'   => 'Pendataan Aset',
+            'barang' => $barang, // Kirim data barang ke view
+            'lokasi' => $lokasi, // Kirim data lokasi ke view
+            'kelompok' => $kelompok, // Kirim data kelompok ke view
+            'dataaset' => $this->dataasetModel->getDataasetWithRelations(),
+            'content' => 'admin/dataaset/tambah',  // View untuk form tambah wakaf
+        ];
         echo view('admin/layout/wrapper', $data);
     }
 
@@ -131,6 +169,36 @@ class Dataaset extends BaseController
         ];
 
         echo view('admin/layout/wrapper', $data);
+    }
+
+    public function update($id)
+    {
+        checklogin();
+
+        if ($this->request->getMethod() === 'post' && $this->validate([
+            'kodeaset' => 'required|max_length[50]',
+            'idbarang' => 'required|integer',
+            'jumlah' => 'required',
+            'kondisi' => 'required|in_list[Baik,Renovasi,Rusak]',
+            'idlokasi' => 'required|integer',
+            'idkelompok' => 'required|integer',
+            'nilaiaset' => 'required|numeric',
+        ])) {
+            $this->dataasetModel->update($id, [
+                'kodeaset' => $this->request->getPost('kodeaset'),
+                'idbarang' => $this->request->getPost('idbarang'),
+                'namaaset' => $this->barangModel->find($this->request->getPost('idbarang'))['namabarang'],
+                'jumlah' => $this->request->getPost('jumlah'),
+                'kondisi' => $this->request->getPost('kondisi'),
+                'idlokasi' => $this->request->getPost('idlokasi'),
+                'idkelompok' => $this->request->getPost('idkelompok'),
+                'nilaiaset' => $this->request->getPost('nilaiaset'),
+            ]);
+            session()->setFlashdata('sukses', 'Data Aset berhasil diperbarui.');
+            return redirect()->to(base_url('admin/dataaset'));
+        }
+
+        return redirect()->back()->withInput()->with('validation', $this->validator);
     }
 
     public function delete($id)

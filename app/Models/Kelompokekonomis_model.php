@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class Kelompokekonomis_model extends Model
 {
-    protected $table = 'kelompokekonomis_model'; // Nama tabel di database
+    protected $table = 'kelompokekonomis'; // Nama tabel di database
     protected $primaryKey = 'idkelompok'; // Primary Key
 
     protected $allowedFields = ['kelompok', 'masamanfaat', 'penyusutan']; // Kolom yang bisa diisi

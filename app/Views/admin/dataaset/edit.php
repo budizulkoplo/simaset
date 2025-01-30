@@ -62,7 +62,8 @@
     </div>
     <div class="form-group row">
         <label class="col-3">Nilai Aset</label>
-        <div class="col-9">
+        <div class="col-9 input-group">
+            <span class="input-group-text">Rp</span>
             <input type="text" name="nilaiaset" class="form-control" placeholder="Nilai Aset" value="<?= set_value('nilaiaset', $dataaset['nilaiaset']) ?>" required>
         </div>
     </div>

@@ -1,4 +1,9 @@
-<?php include 'tambah.php'; ?>
+
+<p>
+    <a href="<?= base_url('admin/dataaset/create') ?>" class="btn btn-success mb-3">
+        <i class="fa fa-plus"></i> Tambah Aset Baru
+    </a>
+</p>
 
 <table class="table table-bordered" id="example1">
     <thead>
@@ -22,9 +27,9 @@
             <td><?= $item['namaaset'] ?></td>
             <td><?= $item['jumlah'] ?></td>
             <td><?= $item['kondisi'] ?></td>
-            <td><?= $item['idlokasi'] ?></td>
-            <td><?= $item['idkelompok'] ?></td>
-            <td><?= number_format($item['nilaiaset'], 2) ?></td>
+            <td><?= $item['namalokasi'] ?></td>
+            <td><?= $item['kelompok'] ?></td>
+            <td>Rp. <?= number_format($item['nilaiaset'], 2) ?></td>
             <td>
                 <a href="<?= base_url('admin/dataaset/edit/' . $item['idaset']) ?>" class="btn btn-success btn-sm">
                     <i class="fa fa-edit"></i>
