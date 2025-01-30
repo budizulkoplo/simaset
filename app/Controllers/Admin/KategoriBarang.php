@@ -1,7 +1,6 @@
 <?php
-
-use App\Controllers\BaseController;
 namespace App\Controllers\Admin;
+use App\Controllers\BaseController;
 
 use App\Models\kategoribarang_model;
 

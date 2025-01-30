@@ -8,8 +8,6 @@
             <th width="25%">Nama Barang</th>
             <th width="10%">Tahun Perolehan</th>
             <th width="15%">Merk</th>
-            <th width="15%">Tanggal Dibuat</th>
-            <th width="15%">Tanggal Diperbarui</th>
             <th width="15%">Aksi</th>
         </tr>
     </thead>
@@ -21,8 +19,6 @@
             <td><?= $item['namabarang'] ?></td>
             <td><?= $item['tahunperolehan'] ?></td>
             <td><?= $item['merk'] ?></td>
-            <td><?= $item['created_at'] ?></td>
-            <td><?= $item['updated_at'] ?></td>
             <td>
                 <a href="<?= base_url('admin/barang/edit/' . $item['idbarang']) ?>" class="btn btn-success btn-sm">
                     <i class="fa fa-edit"></i>

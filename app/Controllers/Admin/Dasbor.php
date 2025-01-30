@@ -16,7 +16,6 @@ class Dasbor extends BaseController
 
     // Load model untuk dasbor dan rekening
     $m_dasbor = new \App\Models\Dasbor_model();
-    $m_rekening = new \App\Models\RekeningModel();
 
     // Ambil data dasbor
     $dataDasbor = [
@@ -25,16 +24,12 @@ class Dasbor extends BaseController
         
     ];
 
-    // Ambil data rekening
-    $rekening = $m_rekening->findAll();
-
     // Gabungkan data untuk view
     $data = [
         'title'       => 'Dashboard Aplikasi',
         'namaUser'    => $namaUser,
         'aksesLevel'  => $aksesLevel,
         'dataDasbor'  => $dataDasbor,
-        'rekening'    => $rekening,
         'content'     => 'admin/dasbor/index', // Path view
     ];
 

@@ -9,29 +9,28 @@ use App\Models\kategoribarang_model;
 class Barang extends BaseController
 {
     public function index()
-{
-    checklogin();
-    
-    $barang_model = new barang_model();
-    $kategoriModel = new kategoribarang_model();
+    {
+        checklogin();
+        
+        $barang_model = new barang_model();
+        $kategoriModel = new kategoribarang_model();
 
-    $data = [
-        'title' => 'Manajemen Barang',
-        'barang' => $barang_model->findAll(),
-        'kategoribarang' => $kategoriModel->findAll() ?? [], // Pastikan selalu array
-        'content' => 'admin/barang/index',
-    ];
-    
-    echo view('admin/layout/wrapper', $data);
-}
-
+        $data = [
+            'title' => 'Manajemen Barang',
+            'barang' => $barang_model->getBarangWithKategori(),
+            'kategoribarang' => $kategoriModel->findAll() ?? [], // Pastikan selalu array
+            'content' => 'admin/barang/index',
+        ];
+        
+        echo view('admin/layout/wrapper', $data);
+    }
 
     public function add()
     {
         checklogin();
         
         // Ambil data kategori untuk dropdown
-        $kategoriModel = new Kategoribarang_model();
+        $kategoriModel = new kategoribarang_model();
         $kategoriBarang = $kategoriModel->findAll();
         
         if ($this->request->getMethod() === 'post' && $this->validate([
@@ -74,7 +73,7 @@ class Barang extends BaseController
         }
         
         // Ambil data kategori untuk dropdown
-        $kategoriModel = new Kategoribarang_model();
+        $kategoriModel = new kategoribarang_model();
         $kategoriBarang = $kategoriModel->findAll();
         
         $data = [
@@ -111,7 +110,6 @@ class Barang extends BaseController
                 'namabarang'       => $this->request->getPost('namabarang'),
                 'tahunperolehan'   => $this->request->getPost('tahunperolehan'),
                 'merk'              => $this->request->getPost('merk'),
-                'updated_at'       => date('Y-m-d H:i:s'),
             ]);
             
             session()->setFlashdata('sukses', 'Barang berhasil diperbarui.');

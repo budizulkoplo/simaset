@@ -6,19 +6,14 @@ use CodeIgniter\Model;
 
 class barang_model extends Model
 {
-    // Nama tabel yang digunakan
-    protected $table = 'barang';
-
-    // Nama primary key pada tabel
+    protected $table      = 'barang';
     protected $primaryKey = 'idbarang';
+    protected $allowedFields = ['idkategoribarang', 'namabarang', 'tahunperolehan', 'merk', 'created_at', 'updated_at'];
 
-    // Daftar field yang diizinkan untuk diinsert/update
-    protected $allowedFields = [
-        'idkategoribarang', 'namabarang', 'tahunperolehan', 'merk', 
-    ];
-
-    // Menentukan apakah kita menggunakan timestamps otomatis
-    protected $useTimestamps = false;
-
-    
-}
+    public function getBarangWithKategori()
+    {
+        return $this->select('barang.*, kategoribarang.kodekategori, kategoribarang.namakategori')
+                    ->join('kategoribarang', 'kategoribarang.idkategoribarang = barang.idkategoribarang')
+                    ->findAll();
+    }
+    }
