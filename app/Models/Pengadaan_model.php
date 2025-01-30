@@ -12,6 +12,13 @@ class Pengadaan_model extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
+    public function getPengadaanWithRelations()
+    {
+        return $this->select('pengadaan.*, lokasiaset.namalokasi')
+                    ->join('lokasiaset', 'lokasiaset.idlokasi = pengadaan.idlokasi')
+                    ->findAll();
+    }
+
     // Relasi dengan tabel lokasiaset
     public function getLokasi()
     {

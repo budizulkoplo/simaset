@@ -25,7 +25,7 @@ class Pengadaan extends BaseController
 
         $data = [
             'title' => 'Manajemen Pengadaan',
-            'pengadaan' => $this->pengadaanModel->findAll(),
+            'pengadaan' => $this->pengadaanModel->getPengadaanWithRelations(),
             'content' => 'admin/pengadaan/index',
         ];
 
@@ -53,40 +53,38 @@ class Pengadaan extends BaseController
     }
 
     public function add()
-    {
-        checklogin();
+{
+    checklogin();
 
-        if ($this->request->getMethod() === 'post' && $this->validate([
-            'idlokasi' => 'required|integer',
-            'idbarang' => 'required',
-            'jumlah' => 'required',
-            'nilaiaset' => 'required|numeric',
-            'status' => 'required|in_list[Dipesan,Diterima,Ditolak]',
-            'user' => 'required|max_length[100]',
-        ])) {
-            $this->pengadaanModel->save([
-                'idlokasi' => $this->request->getPost('idlokasi'),
-                'idbarang' => $this->request->getPost('idbarang'),
-                'namaaset' => $this->barangModel->find($this->request->getPost('idbarang'))['namabarang'],
-                'jumlah' => $this->request->getPost('jumlah'),
-                'nilaiaset' => $this->request->getPost('nilaiaset'),
-                'status' => $this->request->getPost('status'),
-                'user' => $this->request->getPost('user'),
-            ]);
-            session()->setFlashdata('sukses', 'Data Pengadaan berhasil ditambahkan.');
-            return redirect()->to(base_url('admin/pengadaan'));
-        }
-
-        $data = [
-            'title' => 'Tambah Pengadaan',
-            'barang' => $this->barangModel->findAll(),
-            'lokasi' => $this->lokasiModel->findAll(),
-            'content' => 'admin/pengadaan/add',
-            'validation' => $this->validator,
-        ];
-
-        echo view('admin/layout/wrapper', $data);
+    if ($this->request->getMethod() === 'post' && $this->validate([
+        'idlokasi' => 'required|integer',
+        'idbarang' => 'required',
+        'jumlah' => 'required',
+        'nilaiaset' => 'required|numeric',
+    ])) {
+        $this->pengadaanModel->save([
+            'idlokasi' => $this->request->getPost('idlokasi'),
+            'idbarang' => $this->request->getPost('idbarang'),
+            'namaaset' => $this->barangModel->find($this->request->getPost('idbarang'))['namabarang'],
+            'jumlah' => $this->request->getPost('jumlah'),
+            'nilaiaset' => $this->request->getPost('nilaiaset'),
+            'user' => session()->get('username'), // Mengambil username dari session
+        ]);
+        session()->setFlashdata('sukses', 'Data Pengadaan berhasil ditambahkan.');
+        return redirect()->to(base_url('admin/pengadaan'));
     }
+
+    $data = [
+        'title' => 'Tambah Pengadaan',
+        'barang' => $this->barangModel->findAll(),
+        'lokasi' => $this->lokasiModel->findAll(),
+        'content' => 'admin/pengadaan/add',
+        'validation' => $this->validator,
+    ];
+
+    echo view('admin/layout/wrapper', $data);
+}
+
 
     public function edit($id)
     {
@@ -120,7 +118,6 @@ class Pengadaan extends BaseController
             'idbarang' => 'required',
             'jumlah' => 'required',
             'nilaiaset' => 'required|numeric',
-            'status' => 'required|in_list[Dipesan,Diterima,Ditolak]',
             'user' => 'required|max_length[100]',
         ])) {
             $this->pengadaanModel->update($id, [
@@ -129,8 +126,7 @@ class Pengadaan extends BaseController
                 'namaaset' => $this->barangModel->find($this->request->getPost('idbarang'))['namabarang'],
                 'jumlah' => $this->request->getPost('jumlah'),
                 'nilaiaset' => $this->request->getPost('nilaiaset'),
-                'status' => $this->request->getPost('status'),
-                'user' => $this->request->getPost('user'),
+                'user' => session()->get('username'), // Mengambil username dari session
             ]);
             session()->setFlashdata('sukses', 'Data Pengadaan berhasil diperbarui.');
             return redirect()->to(base_url('admin/pengadaan'));

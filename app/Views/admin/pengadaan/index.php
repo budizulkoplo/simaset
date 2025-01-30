@@ -12,7 +12,6 @@
             <th width="15%">Barang</th>
             <th width="10%">Jumlah</th>
             <th width="10%">Nilai Aset</th>
-            <th width="10%">Status</th>
             <th width="10%">User</th>
             <th width="10%">Aksi</th>
         </tr>
@@ -21,11 +20,10 @@
         <?php $no = 1; foreach ($pengadaan as $item) { ?>
         <tr>
             <td><?= $no ?></td>
-            <td><?= $item['idlokasi'] ?></td>
+            <td><?= $item['namalokasi'] ?></td>
             <td><?= $item['namaaset'] ?></td>
             <td><?= $item['jumlah'] ?></td>
-            <td><?= number_format($item['nilaiaset'], 2) ?></td>
-            <td><?= $item['status'] ?></td>
+            <td>Rp. <?= number_format($item['nilaiaset'], 2) ?></td>
             <td><?= $item['user'] ?></td>
             <td>
                 <a href="<?= base_url('admin/pengadaan/edit/' . $item['idpengadaan']) ?>" class="btn btn-success btn-sm">

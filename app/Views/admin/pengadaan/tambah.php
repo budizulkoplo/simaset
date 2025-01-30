@@ -44,18 +44,6 @@
     </div>
 
     <div class="form-group row">
-        <label class="col-3 col-form-label">Status</label>
-        <div class="col-9">
-            <select name="status" class="form-control" required>
-                <option value="">Pilih Status</option>
-                <option value="Dipesan">Dipesan</option>
-                <option value="Diterima">Diterima</option>
-                <option value="Ditolak">Ditolak</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="form-group row">
         <label class="col-3 col-form-label">User</label>
         <div class="col-9">
             <input type="text" name="user" class="form-control" placeholder="User" required>

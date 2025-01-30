@@ -38,17 +38,7 @@
             <input type="text" name="nilaiaset" class="form-control" placeholder="Nilai Aset" value="<?= set_value('nilaiaset', $pengadaan['nilaiaset']) ?>" required>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-3">Status</label>
-        <div class="col-9">
-            <select name="status" class="form-control" required>
-                <option value="">Pilih Status</option>
-                <option value="Dipesan" <?= ($pengadaan['status'] == 'Dipesan') ? 'selected' : '' ?>>Dipesan</option>
-                <option value="Diterima" <?= ($pengadaan['status'] == 'Diterima') ? 'selected' : '' ?>>Diterima</option>
-                <option value="Ditolak" <?= ($pengadaan['status'] == 'Ditolak') ? 'selected' : '' ?>>Ditolak</option>
-            </select>
-        </div>
-    </div>
+    
     <div class="form-group row">
         <label class="col-3">User</label>
         <div class="col-9">
