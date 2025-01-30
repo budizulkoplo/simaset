@@ -24,7 +24,7 @@
     <div class="form-group row">
         <label class="col-3">Jumlah</label>
         <div class="col-9">
-            <input type="text" name="jumlah" class="form-control" placeholder="Jumlah" value="<?= set_value('jumlah', $dataaset['jumlah']) ?>" required>
+            <input type="number" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" value="<?= set_value('jumlah', $dataaset['jumlah']) ?>" required>
         </div>
     </div>
     <div class="form-group row">
@@ -64,7 +64,15 @@
         <label class="col-3">Nilai Aset</label>
         <div class="col-9 input-group">
             <span class="input-group-text">Rp</span>
-            <input type="text" name="nilaiaset" class="form-control" placeholder="Nilai Aset" value="<?= set_value('nilaiaset', $dataaset['nilaiaset']) ?>" required>
+            <input type="number" id="nilaiaset" name="nilaiaset" class="form-control" placeholder="Nilai Aset" value="<?= set_value('nilaiaset', $dataaset['nilaiaset']) ?>" required>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-3">Total Nilai Aset</label>
+        <div class="col-9 input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" id="totalnilaiaset" class="form-control" placeholder="Total Nilai Aset" readonly>
         </div>
     </div>
 
@@ -77,3 +85,21 @@
 
     <?= form_close(); ?>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const jumlahInput = document.getElementById("jumlah");
+        const nilaiAsetInput = document.getElementById("nilaiaset");
+        const totalNilaiAsetInput = document.getElementById("totalnilaiaset");
+
+        function hitungTotal() {
+            let jumlah = parseInt(jumlahInput.value) || 0;
+            let nilaiAset = parseFloat(nilaiAsetInput.value) || 0;
+            let total = jumlah * nilaiAset;
+            totalNilaiAsetInput.value = total.toLocaleString("id-ID");
+        }
+
+        jumlahInput.addEventListener("input", hitungTotal);
+        nilaiAsetInput.addEventListener("input", hitungTotal);
+    });
+</script>

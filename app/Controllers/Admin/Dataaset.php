@@ -97,6 +97,7 @@ class Dataaset extends BaseController
         'idlokasi' => 'required|integer',
         'idkelompok' => 'required|integer',
         'nilaiaset' => 'required|numeric',
+        'totalnilaiaset' => 'required|numeric',
     ])) {
         $this->dataasetModel->save([
             'kodeaset' => $this->request->getPost('kodeaset'),
@@ -107,6 +108,7 @@ class Dataaset extends BaseController
             'idlokasi' => $this->request->getPost('idlokasi'),
             'idkelompok' => $this->request->getPost('idkelompok'),
             'nilaiaset' => $this->request->getPost('nilaiaset'),
+            'totalnilaiaset' => $this->request->getPost('totalnilaiaset'),
         ]);
         session()->setFlashdata('sukses', 'Data Aset berhasil ditambahkan.');
         return redirect()->to(base_url('admin/dataaset'));
@@ -143,6 +145,7 @@ class Dataaset extends BaseController
             'idlokasi' => 'required|integer',
             'idkelompok' => 'required|integer',
             'nilaiaset' => 'required|numeric',
+            'totalnilaiaset' => 'required|numeric',
         ])) {
             $this->dataasetModel->update($id, [
                 'kodeaset' => $this->request->getPost('kodeaset'),
@@ -153,6 +156,7 @@ class Dataaset extends BaseController
                 'idlokasi' => $this->request->getPost('idlokasi'),
                 'idkelompok' => $this->request->getPost('idkelompok'),
                 'nilaiaset' => $this->request->getPost('nilaiaset'),
+                'totalnilaiaset' => $this->request->getPost('totalnilaiaset'),
             ]);
             session()->setFlashdata('sukses', 'Data Aset berhasil diperbarui.');
             return redirect()->to(base_url('admin/dataaset'));
@@ -183,6 +187,7 @@ class Dataaset extends BaseController
             'idlokasi' => 'required|integer',
             'idkelompok' => 'required|integer',
             'nilaiaset' => 'required|numeric',
+            'totalnilaiaset' => 'required|numeric',
         ])) {
             $this->dataasetModel->update($id, [
                 'kodeaset' => $this->request->getPost('kodeaset'),
@@ -193,6 +198,7 @@ class Dataaset extends BaseController
                 'idlokasi' => $this->request->getPost('idlokasi'),
                 'idkelompok' => $this->request->getPost('idkelompok'),
                 'nilaiaset' => $this->request->getPost('nilaiaset'),
+                'totalnilaiaset' => $this->request->getPost('totalnilaiaset'),
             ]);
             session()->setFlashdata('sukses', 'Data Aset berhasil diperbarui.');
             return redirect()->to(base_url('admin/dataaset'));
