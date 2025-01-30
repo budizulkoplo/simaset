@@ -32,6 +32,26 @@ class Pengadaan extends BaseController
         echo view('admin/layout/wrapper', $data);
     }
 
+    public function create()
+    {
+        checklogin();
+
+        $lokasiModel = new \App\Models\Lokasiaset_model();
+        $lokasi = $lokasiModel->findAll();
+        $barangModel = new \App\Models\Barang_model();
+        $barang = $barangModel->findAll();
+
+        $data = [
+            'title' => 'Manajemen Pengadaan',
+            'barang' => $barang, 
+            'lokasi' => $lokasi, 
+            'pengadaan' => $this->pengadaanModel->findAll(),
+            'content' => 'admin/pengadaan/tambah',
+        ];
+
+        echo view('admin/layout/wrapper', $data);
+    }
+
     public function add()
     {
         checklogin();
