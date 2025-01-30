@@ -151,6 +151,7 @@ class Monitoring extends BaseController
         return redirect()->back()->withInput()->with('validation', $this->validator);
     }
 
+    
     public function delete($id)
     {
         checklogin();
