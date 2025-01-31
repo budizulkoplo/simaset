@@ -8,7 +8,7 @@ class Dataaset_model extends Model
     
     protected $table      = 'dataaset';
     protected $primaryKey = 'idaset';
-    protected $allowedFields = ['kodeaset', 'idbarang', 'namaaset', 'jumlah', 'kondisi', 'idlokasi', 'idkelompok', 'nilaiaset'];
+    protected $allowedFields = ['kodeaset', 'idbarang', 'namaaset', 'jumlah', 'kondisi', 'idlokasi', 'idkelompok', 'nilaiaset','totalnilaiaset'];
     protected $useTimestamps = true; // Jika Anda ingin menggunakan created_at dan updated_at
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';

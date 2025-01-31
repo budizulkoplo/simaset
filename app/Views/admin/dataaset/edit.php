@@ -72,7 +72,7 @@
         <label class="col-3">Total Nilai Aset</label>
         <div class="col-9 input-group">
             <span class="input-group-text">Rp</span>
-            <input type="text" id="totalnilaiaset" class="form-control" placeholder="Total Nilai Aset" readonly>
+            <input type="text" id="totalnilaiaset" name="totalnilaiaset" class="form-control" placeholder="Total Nilai Aset" value="<?= set_value('totalnilaiaset', $dataaset['totalnilaiaset']) ?>" readonly>
         </div>
     </div>
 
@@ -96,7 +96,7 @@
             let jumlah = parseInt(jumlahInput.value) || 0;
             let nilaiAset = parseFloat(nilaiAsetInput.value) || 0;
             let total = jumlah * nilaiAset;
-            totalNilaiAsetInput.value = total.toLocaleString("id-ID");
+            totalNilaiAsetInput.value = total;
         }
 
         jumlahInput.addEventListener("input", hitungTotal);
