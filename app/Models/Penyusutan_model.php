@@ -22,38 +22,40 @@ class Penyusutan_model extends Model
     {
         $query = $this->db->query("
             SELECT 
-                idaset, 
-                kodeaset, 
-                a.idbarang, 
-                namaaset, 
-                jumlah, 
-                kondisi, 
-                nilaiaset,
-                totalnilaiaset,
-                tahunperolehan,
-                merk,
-                namalokasi,
-                kelompok,
-                masamanfaat,
-                penyusutan,
-                YEAR(CURDATE()) - tahunperolehan AS lama_pemakaian,
-                CASE 
-                    WHEN (YEAR(CURDATE()) - tahunperolehan) > masamanfaat THEN
-                        (nilaiaset * (penyusutan / 100) * (YEAR(CURDATE()) - tahunperolehan - masamanfaat))
-                    ELSE
-                        0
-                END AS nilai_penyusutan,
-                CASE 
-                    WHEN (YEAR(CURDATE()) - tahunperolehan) > masamanfaat THEN
-                        nilaiaset - (nilaiaset * (penyusutan / 100) * (YEAR(CURDATE()) - tahunperolehan - masamanfaat))
-                    ELSE
-                        nilaiaset
-                END AS nilaiaset_setelah_penyusutan
-            FROM 
-                dataaset a 
-                JOIN barang b ON a.idbarang = b.idbarang
-                JOIN lokasiaset c ON a.idlokasi = c.idlokasi 
-                JOIN kelompokekonomis d ON a.idkelompok = d.idkelompok
+    idaset, 
+    kodeaset, 
+    a.idbarang, 
+    namaaset, 
+    jumlah, 
+    kondisi, 
+    nilaiaset,
+    totalnilaiaset,
+    tahunperolehan,
+    merk,
+    namalokasi,
+    kelompok,
+    masamanfaat,
+    penyusutan,
+    YEAR(CURDATE()) - tahunperolehan AS lama_pemakaian,
+    CASE 
+        WHEN (YEAR(CURDATE()) - tahunperolehan) >= 1 AND (YEAR(CURDATE()) - tahunperolehan) <= masamanfaat 
+        THEN nilaiaset * (penyusutan / 100) * (YEAR(CURDATE()) - tahunperolehan)
+        WHEN (YEAR(CURDATE()) - tahunperolehan) > masamanfaat
+        THEN nilaiaset * (penyusutan / 100) * masamanfaat
+        ELSE 0
+    END AS nilai_penyusutan,
+    CASE 
+        WHEN (YEAR(CURDATE()) - tahunperolehan) >= 1 AND (YEAR(CURDATE()) - tahunperolehan) <= masamanfaat
+        THEN nilaiaset - (nilaiaset * (penyusutan / 100) * (YEAR(CURDATE()) - tahunperolehan))
+        WHEN (YEAR(CURDATE()) - tahunperolehan) > masamanfaat
+        THEN nilaiaset - (nilaiaset * (penyusutan / 100) * masamanfaat)
+        ELSE nilaiaset
+    END AS nilaiaset_setelah_penyusutan
+FROM 
+    dataaset a 
+    JOIN barang b ON a.idbarang = b.idbarang
+    JOIN lokasiaset c ON a.idlokasi = c.idlokasi 
+    JOIN kelompokekonomis d ON a.idkelompok = d.idkelompok;
         ");
 
         return $query->getResultArray(); // Mengembalikan hasil query sebagai array

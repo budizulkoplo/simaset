@@ -4,10 +4,11 @@
                             <th width="5%">No</th>
                             <th width="15%">Kode Aset</th>
                             <th width="15%">Nama Aset</th>
-                            <th width="10%">Jumlah</th>
+                            <th width="10%">Tahun Perolehan</th>
                             <th width="10%">Nilai Aset</th>
                             <th width="10%">Masa Manfaat</th>
                             <th width="10%">Lama Pemakaian</th>
+                            <th width="10%">% Penyusutan</th>
                             <th width="10%">Nilai Penyusutan</th>
                             <th width="10%">Nilai Aset Setelah Penyusutan</th>
                             <th width="10%">Aksi</th>
@@ -19,10 +20,11 @@
                             <td><?= $no ?></td>
                             <td><?= esc($item['kodeaset']) ?></td>
                             <td><?= esc($item['namaaset']) ?></td>
-                            <td><?= esc($item['jumlah']) ?></td>
+                            <td><?= esc($item['tahunperolehan']) ?></td>
                             <td>Rp. <?= number_format($item['nilaiaset'], 2) ?></td>
                             <td><?= esc($item['masamanfaat']) ?> Tahun</td>
                             <td><?= esc($item['lama_pemakaian']) ?> Tahun</td>
+                            <td><?= esc($item['penyusutan']) ?> %</td>
                             <td>Rp. <?= number_format($item['nilai_penyusutan'], 2) ?></td>
                             <td>Rp. <?= number_format($item['nilaiaset_setelah_penyusutan'], 2) ?></td>
                             <td>

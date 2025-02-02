@@ -1,7 +1,7 @@
 
 
 <!-- Tombol Tambah -->
-<a href="<?= base_url('admin/penghapusan/create') ?>" class="btn btn-primary mb-3">
+<a href="<?= base_url('admin/penghapusan/add') ?>" class="btn btn-primary mb-3">
     <i class="fa fa-plus"></i> Tambah Penghapusan
 </a>
 

@@ -50,38 +50,38 @@ class Penyusutan extends BaseController
     // Ambil data aset pertama
     $aset = $aset[0];
 
-    // Hitung penyusutan per tahun mulai dari tahun kedua
+    // Hitung penyusutan per tahun sesuai konsep baru
     $tahunSekarang = date('Y');
     $tahunPengadaan = $aset['tahunperolehan'];
+    $masamanfaat = $aset['masamanfaat'];
     $nilaiAsetAwal = $aset['nilaiaset'];
-    $penyusutanPerTahun = ($nilaiAsetAwal * ($aset['penyusutan'] / 100));
+    $penyusutanPerTahun = $nilaiAsetAwal * ($aset['penyusutan'] / 100);
 
     $detailPenyusutan = [];
     $nilaiAset = $nilaiAsetAwal;
     $akumulasiPenyusutan = 0;
 
     for ($tahun = $tahunPengadaan; $tahun <= $tahunSekarang; $tahun++) {
-        if ($tahun > $tahunPengadaan) { // Mulai penyusutan dari tahun kedua
-            if ($akumulasiPenyusutan + $penyusutanPerTahun >= $nilaiAsetAwal) {
-                $penyusutanPerTahun = $nilaiAsetAwal - $akumulasiPenyusutan;
-                $nilaiAset = 0; // Nilai aset menjadi 0
-            } else {
+        if (($tahun - $tahunPengadaan) >= 1) { // Penyusutan mulai dihitung ketika aset sudah 1 tahun digunakan
+            if (($tahun - $tahunPengadaan) <= $masamanfaat) { // Penyusutan hanya sampai masa manfaat habis
+                $akumulasiPenyusutan += $penyusutanPerTahun;
                 $nilaiAset -= $penyusutanPerTahun;
+            } else {
+                // Setelah masa manfaat habis, penyusutan berhenti (tidak ditambah lagi)
+                $penyusutanPerTahun = 0;
             }
-
-            $akumulasiPenyusutan += $penyusutanPerTahun;
         }
 
         // Simpan data penyusutan
         $detailPenyusutan[] = [
             'tahun' => $tahun,
-            'penyusutan' => ($tahun > $tahunPengadaan) ? $penyusutanPerTahun : 0,
-            'akumulasi_penyusutan' => $akumulasiPenyusutan,
-            'nilai_aset' => max(0, $nilaiAset), // Pastikan tidak negatif
+            'penyusutan' => ($tahun - $tahunPengadaan) >= 1 && ($tahun - $tahunPengadaan) <= $masamanfaat ? $penyusutanPerTahun : 0,
+            'akumulasi_penyusutan' => min($akumulasiPenyusutan, $nilaiAsetAwal), // Tidak boleh lebih dari nilai aset awal
+            'nilai_aset' => max(0, $nilaiAset), // Pastikan nilai aset tidak negatif
         ];
 
-        // Jika nilai aset sudah habis, hentikan perulangan
-        if ($nilaiAset <= 0) {
+        // Jika sudah melewati masa manfaat, hentikan perulangan
+        if (($tahun - $tahunPengadaan) > $masamanfaat) {
             break;
         }
     }
@@ -95,6 +95,7 @@ class Penyusutan extends BaseController
 
     echo view('admin/layout/wrapper', $data);
 }
+
 
 
 

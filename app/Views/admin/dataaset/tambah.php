@@ -1,7 +1,7 @@
 <div class="container">
     <h3>Tambah Data Aset Baru</h3>
 
-    <?= form_open(base_url('admin/dataaset/add')); ?>
+    <?= form_open(base_url('admin/dataaset/store')); ?>
     <?= csrf_field(); ?>
 
     <div class="form-group row">
