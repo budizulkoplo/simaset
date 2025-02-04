@@ -7,185 +7,143 @@ use App\Models\WakafModel;
 
 class Laporan extends BaseController
 {
-    public function wakaf()
-    {
-        $m_wakaf = new \App\Models\WakafModel();
+    public function aset()
+{
+    $m_aset = new \App\Models\Dataaset_model();
+    $m_lokasi = new \App\Models\Lokasiaset_model();
 
-        // Ambil data laporan wakaf menggunakan metode baru
-        $dataWakaf = $m_wakaf->getLaporanWakaf();
+    // Ambil input filter dari request
+    $idlokasi = $this->request->getGet('idlokasi');
+    $tahunpengadaan = $this->request->getGet('tahunpengadaan');
 
-        // Kirim data ke view
-        $data = [
-            'title'      => 'Laporan Wakaf',  // Judul halaman
-            'printstatus' => 'print',         // Menandakan bahwa tombol print harus ditampilkan
-            'dataWakaf'  => $dataWakaf,
-            'content'    => 'admin/laporan/wakaf',
-        ];
-        
-        return view('admin/layout/wrapper', $data);
-        
+    // Query dasar dengan join ke tabel barang
+    $query = $m_aset->select('dataaset.*, barang.tahunperolehan, lokasiaset.namalokasi')
+        ->join('lokasiaset', 'lokasiaset.idlokasi = dataaset.idlokasi', 'left')
+        ->join('barang', 'barang.idbarang = dataaset.idbarang', 'left'); // Join ke tabel barang
 
-        return view('admin/layout/wrapper', $data);
+    // Tambahkan filter lokasi jika dipilih
+    if (!empty($idlokasi)) {
+        $query->where('dataaset.idlokasi', $idlokasi);
     }
 
-    public function program()
-    {
-        $m_transaksi = new \App\Models\TransaksiModel();
-        
-        // Ambil data laporan zakat dengan join untuk mendapatkan nama ranting
-        $dataLaporan = $m_transaksi->query("
-            SELECT
-                t.judulprogram,
-                pl.idranting,
-                r.namaranting,
-                SUM(t.nominal) AS total_nominal,
-                COUNT(t.idtransaksi) AS total_transaksi,
-                SUM(CASE WHEN t.tipetransaksi = 'Zakat' THEN t.nominal ELSE 0 END) AS total_zakat,
-                SUM(CASE WHEN t.tipetransaksi = 'Tasaruf' THEN t.nominal ELSE 0 END) AS total_tasaruf
-            FROM
-                transaksi t
-            JOIN programlazis pl ON pl.idprogram = t.program
-            JOIN ranting r ON r.idranting = pl.idranting
-            WHERE
-                t.tipetransaksi = 'Zakat' OR t.tipetransaksi = 'Tasaruf'
-            GROUP BY
-                t.judulprogram, pl.idranting, r.namaranting
-            ORDER BY
-                t.judulprogram
-        ")->getResultArray();
-
-        // Kirim data ke view
-        $data = [
-            'title'         => 'Laporan Program',
-            'printstatus' => 'print',    
-            'dataLaporan'   => $dataLaporan,
-            'content'       => 'admin/laporan/program',
-        ];
-
-        return view('admin/layout/wrapper', $data);
+    // Tambahkan filter tahun pengadaan jika dipilih
+    if (!empty($tahunpengadaan)) {
+        $query->where('barang.tahunperolehan', $tahunpengadaan);
     }
 
-    public function transaksi()
-    {
-        $m_transaksi = new \App\Models\TransaksiModel();
-        
-        // Ambil data laporan transaksi dengan status 'sukses'
-        $dataLaporanTransaksi = $m_transaksi->query("
-            SELECT
-                tgltransaksi,
-                tipetransaksi,
-                muzaki,
-                mustahik,
-                nominal,
-                cashflow,
-                judulprogram
-            FROM
-                transaksi
-            WHERE
-                status = 'sukses'
-            ORDER BY
-                tgltransaksi DESC
-        ")->getResultArray();
+    // Ambil data aset
+    $dataAset = $query->findAll();
 
-        // Kirim data ke view
-        $data = [
-            'title'                 => 'Laporan Transaksi',
-            'printstatus' => 'print', 
-            'dataLaporanTransaksi'  => $dataLaporanTransaksi,
-            'content'               => 'admin/laporan/transaksi',
-        ];
+    // Ambil data lokasi untuk dropdown filter
+    $dataLokasi = $m_lokasi->findAll();
 
-        return view('admin/layout/wrapper', $data);
+    // Kirim data ke view
+    $data = [
+        'title'         => 'Laporan Data Aset',
+        'printstatus'   => 'print',
+        'dataAset'      => $dataAset,
+        'dataLokasi'    => $dataLokasi,
+        'idlokasi'      => $idlokasi,
+        'tahunpengadaan' => $tahunpengadaan,
+        'content'       => 'admin/laporan/aset',
+    ];
+
+    return view('admin/layout/wrapper', $data);
+}
+
+
+public function pengadaan()
+{
+    $m_pengadaan = new \App\Models\Pengadaan_model();
+    $m_lokasi = new \App\Models\Lokasiaset_model();
+
+    // Ambil input filter dari request
+    $idlokasi = $this->request->getGet('idlokasi');
+    $tahunpengadaan = $this->request->getGet('tahunpengadaan');
+
+    // Query dasar dengan join ke tabel barang
+    $query = $m_pengadaan->select('pengadaan.*, barang.namabarang, lokasiaset.namalokasi')
+        ->join('lokasiaset', 'lokasiaset.idlokasi = pengadaan.idlokasi', 'left')
+        ->join('barang', 'barang.idbarang = pengadaan.idbarang', 'left'); // Join ke tabel barang
+
+    // Tambahkan filter lokasi jika dipilih
+    if (!empty($idlokasi)) {
+        $query->where('pengadaan.idlokasi', $idlokasi);
     }
 
-    public function zakat()
-    {
-        $m_transaksi = new \App\Models\TransaksiModel();
-
-        // Ambil filter dari input
-        $tahunDari = $this->request->getVar('tahun_dari') ?: date('Y') - 1;
-        $tahunKe = $this->request->getVar('tahun_ke') ?: date('Y');
-        $bulanDari = $this->request->getVar('bulan_dari') ?: 1;
-        $bulanKe = $this->request->getVar('bulan_ke') ?: 12;
-
-        // Grafik Tahunan
-        $dataTahunan = $m_transaksi->query("
-            SELECT
-                YEAR(t.tgltransaksi) AS tahun,
-                SUM(CASE WHEN t.cashflow = 'Pemasukan' THEN t.nominal ELSE 0 END) AS pemasukan,
-                SUM(CASE WHEN t.cashflow = 'Pengeluaran' THEN t.nominal ELSE 0 END) AS pengeluaran
-            FROM
-                transaksi t
-            WHERE
-                t.status = 'sukses'
-                AND YEAR(t.tgltransaksi) BETWEEN $tahunDari AND $tahunKe
-            GROUP BY
-                YEAR(t.tgltransaksi)
-            ORDER BY
-                tahun DESC
-        ")->getResultArray();
-
-        // Grafik Bulanan
-        $dataBulanan = $m_transaksi->query("
-            SELECT
-                YEAR(t.tgltransaksi) AS tahun,
-                MONTH(t.tgltransaksi) AS bulan,
-                SUM(CASE WHEN t.cashflow = 'Pemasukan' THEN t.nominal ELSE 0 END) AS pemasukan,
-                SUM(CASE WHEN t.cashflow = 'Pengeluaran' THEN t.nominal ELSE 0 END) AS pengeluaran
-            FROM
-                transaksi t
-            WHERE
-                t.status = 'sukses'
-                AND YEAR(t.tgltransaksi) BETWEEN $tahunDari AND $tahunKe
-                AND MONTH(t.tgltransaksi) BETWEEN $bulanDari AND $bulanKe
-            GROUP BY
-                YEAR(t.tgltransaksi), MONTH(t.tgltransaksi)
-            ORDER BY
-                tahun DESC, bulan DESC
-        ")->getResultArray();
-
-        // Grafik per Ranting
-        $dataRanting = $m_transaksi->query("
-            SELECT
-                r.namaranting,
-                SUM(CASE WHEN t.cashflow = 'Pemasukan' THEN t.nominal ELSE 0 END) AS pemasukan,
-                SUM(CASE WHEN t.cashflow = 'Pengeluaran' THEN t.nominal ELSE 0 END) AS pengeluaran
-            FROM
-                transaksi t
-            JOIN programlazis pl ON pl.idprogram = t.program
-            JOIN ranting r ON r.idranting = pl.idranting
-            WHERE
-                 t.status = 'sukses'
-            GROUP BY
-                r.namaranting
-        ")->getResultArray();
-    
-        // Grafik Pengeluaran (Tasaruf)
-        $dataPengeluaran = $m_transaksi->query("
-            SELECT
-                SUM(CASE WHEN t.cashflow = 'Pengeluaran' THEN t.nominal ELSE 0 END) AS pengeluaran
-            FROM
-                transaksi t
-            WHERE
-                 t.status = 'sukses'
-        ")->getRow();
-
-        // Kirim data ke view
-        $data = [
-            'title'       => 'Laporan Zakat',
-            'printstatus' => 'print', 
-            'tahun_dari'  => $tahunDari,
-            'tahun_ke'    => $tahunKe,
-            'bulan_dari'  => $bulanDari,
-            'bulan_ke'    => $bulanKe,
-            'dataRanting'       => $dataRanting,
-            'dataTahunan' => $dataTahunan,
-            'dataBulanan' => $dataBulanan,
-            'content'     => 'admin/laporan/zakat',
-        ];
-
-        return view('admin/layout/wrapper', $data);
+    // Tambahkan filter tahun pengadaan berdasarkan created_at jika dipilih
+    if (!empty($tahunpengadaan)) {
+        $query->where('YEAR(pengadaan.created_at)', $tahunpengadaan);
     }
+
+    // Ambil data pengadaan
+    $dataPengadaan = $query->findAll();
+
+    // Ambil data lokasi untuk dropdown filter
+    $dataLokasi = $m_lokasi->findAll();
+
+    // Kirim data ke view
+    $data = [
+        'title'         => 'Laporan Data Pengadaan',
+        'printstatus'   => 'print',
+        'dataPengadaan' => $dataPengadaan,
+        'dataLokasi'    => $dataLokasi,
+        'idlokasi'      => $idlokasi,
+        'tahunpengadaan' => $tahunpengadaan,
+        'content'       => 'admin/laporan/pengadaan',
+    ];
+
+    return view('admin/layout/wrapper', $data);
+}
+
+public function penghapusan()
+{
+    $m_penghapusan = new \App\Models\Penghapusan_model();
+    $m_lokasi = new \App\Models\Lokasiaset_model();
+
+    // Ambil input filter dari request
+    $idlokasi = $this->request->getGet('idlokasi');
+    $tahunhapus = $this->request->getGet('tahunhapus');
+
+    // Query dasar dengan join ke dataaset dan lokasiaset
+    $query = $m_penghapusan
+        ->select('penghapusan.*, lokasiaset.namalokasi, dataaset.idlokasi')
+        ->join('dataaset', 'dataaset.idaset = penghapusan.idaset')
+        ->join('lokasiaset', 'dataaset.idlokasi = lokasiaset.idlokasi');
+
+    // Tambahkan filter lokasi jika dipilih
+    if (!empty($idlokasi)) {
+        $query->where('dataaset.idlokasi', $idlokasi);
+    }
+
+    // Tambahkan filter tahun penghapusan jika dipilih
+    if (!empty($tahunhapus)) {
+        $query->where('YEAR(penghapusan.tanggalhapus)', $tahunhapus);
+    }
+
+
+    // Ambil data penghapusan
+    $dataPenghapusan = $query->findAll();
+
+    // Ambil data lokasi untuk dropdown filter
+    $dataLokasi = $m_lokasi->findAll();
+
+    // Kirim data ke view
+    $data = [
+        'title'         => 'Laporan Data Penghapusan',
+        'printstatus'   => 'print',
+        'dataPenghapusan' => $dataPenghapusan,
+        'dataLokasi'    => $dataLokasi,
+        'idlokasi'      => $idlokasi,
+        'tahunhapus'    => $tahunhapus,
+        'content'       => 'admin/laporan/penghapusan',
+
+    ];
+
+    return view('admin/layout/wrapper', $data);
+}
+
+
 
 
 }

@@ -6,6 +6,7 @@ use App\Models\Dataaset_model;
 use App\Models\Barang_model;
 use App\Models\Lokasiaset_model;
 use App\Models\Kelompokekonomis_model;
+use App\Models\Penghapusan_model;
 
 class Dataaset extends BaseController
 {
@@ -20,6 +21,7 @@ class Dataaset extends BaseController
         $this->barangModel = new Barang_model();
         $this->lokasiModel = new Lokasiaset_model();
         $this->kelompokModel = new Kelompokekonomis_model();
+        $this->penghapusanModel = new Penghapusan_model();
     }
 
     public function index()
@@ -205,6 +207,39 @@ class Dataaset extends BaseController
         }
 
         return redirect()->back()->withInput()->with('validation', $this->validator);
+    }
+
+    public function dihapuskan()
+    {
+        checklogin();
+
+        $data = [
+            'title' => 'Aset Dihapuskan',
+            'penghapusan' => $this->penghapusanModel->getPenghapusanWithAset(),
+            'content' => 'admin/dataaset/dihapuskan',
+        ];
+
+        echo view('admin/layout/wrapper', $data);
+    }
+
+    public function viewdata($id)
+    {
+        checklogin();
+
+        $penghapusan = $this->penghapusanModel->getPenghapusanById($id);
+
+        if (!$penghapusan) {
+            session()->setFlashdata('error', 'Data penghapusan tidak ditemukan.');
+            return redirect()->to(base_url('admin/penghapusan'));
+        }
+
+        $data = [
+            'title' => 'View Penghapusan Aset',
+            'penghapusan' => $penghapusan,
+            'content' => 'admin/dataaset/viewpenghapusan',
+        ];
+
+        echo view('admin/layout/wrapper', $data);
     }
 
     public function delete($id)
