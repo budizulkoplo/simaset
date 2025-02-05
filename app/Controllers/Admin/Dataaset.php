@@ -227,6 +227,7 @@ class Dataaset extends BaseController
         checklogin();
 
         $penghapusan = $this->penghapusanModel->getPenghapusanById($id);
+        $dataaset = $this->dataasetModel->where('kodeaset', $kodeaset)->first();
 
         if (!$penghapusan) {
             session()->setFlashdata('error', 'Data penghapusan tidak ditemukan.');
@@ -234,9 +235,10 @@ class Dataaset extends BaseController
         }
 
         $data = [
-            'title' => 'View Penghapusan Aset',
+            'title' => 'View Data Penghapusan Aset',
+            'dataaset' => $this->dataasetModel->findAll(),
             'penghapusan' => $penghapusan,
-            'content' => 'admin/dataaset/viewpenghapusan',
+            'content' => 'admin/datataset/viewpenghapusan',
         ];
 
         echo view('admin/layout/wrapper', $data);

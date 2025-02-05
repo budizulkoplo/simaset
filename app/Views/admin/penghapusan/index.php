@@ -27,14 +27,10 @@
             <td><?= esc($hapus['penyebab']) ?></td>
             <td><?= date('d-m-Y', strtotime($hapus['tanggalhapus'])) ?></td>
             <td>
-                <a href="<?= base_url('admin/penghapusan/edit/' . $hapus['idpenghapusan']) ?>" class="btn btn-success btn-sm">
-                    <i class="fa fa-edit"></i>
+                <a href="<?= base_url('admin/penghapusan/viewdata/' . $hapus['idhapus']) ?>" class="btn btn-success btn-sm">
+                    <i class="fa fa-eye"></i> View
                 </a>
-                <a href="<?= base_url('admin/penghapusan/delete/' . $hapus['idpenghapusan']) ?>" 
-                    class="btn btn-danger btn-sm" 
-                    onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                    <i class="fa fa-trash"></i>
-                </a>
+
             </td>
         </tr>
         <?php } ?>

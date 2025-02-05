@@ -53,8 +53,6 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h3 class="mb-3">Laporan Data Pengadaan</h3>
-
     <!-- Form Filter -->
     <form action="<?= base_url('admin/laporan/pengadaan') ?>" method="get" class="mb-3">
         <div class="row align-items-center">

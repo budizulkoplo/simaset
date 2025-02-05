@@ -133,11 +133,12 @@ class Penghapusan extends BaseController
     }
 
 
-    public function edit($id)
+    public function viewdata($id)
     {
         checklogin();
 
         $penghapusan = $this->penghapusanModel->getPenghapusanById($id);
+        $dataaset = $this->dataasetModel->where('kodeaset', $kodeaset)->first();
 
         if (!$penghapusan) {
             session()->setFlashdata('error', 'Data penghapusan tidak ditemukan.');
@@ -145,7 +146,8 @@ class Penghapusan extends BaseController
         }
 
         $data = [
-            'title' => 'Edit Penghapusan Aset',
+            'title' => 'View Data Penghapusan Aset',
+            'dataaset' => $this->dataasetModel->findAll(),
             'penghapusan' => $penghapusan,
             'content' => 'admin/penghapusan/edit',
         ];

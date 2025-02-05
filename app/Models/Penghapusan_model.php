@@ -41,9 +41,27 @@ class Penghapusan_model extends Model
     // Method untuk mengambil data penghapusan berdasarkan ID
     public function getPenghapusanById($id)
     {
-        return $this->find($id); // Menggunakan method find() bawaan CodeIgniter
+        $query = $this->db->query("
+            SELECT 
+                p.idhapus,
+                p.idaset,
+                p.kodeaset,
+                p.namaaset,
+                p.jumlahdihapuskan,
+                p.penyebab,
+                p.tanggalhapus,
+                a.nilaiaset,
+                b.tahunperolehan
+            FROM 
+                penghapusan p
+                JOIN dataaset a ON p.idaset = a.idaset 
+                JOIN barang b ON a.idbarang = b.idbarang
+            WHERE p.idhapus = ?
+        ", [$id]);
+    
+        return $query->getRowArray(); // Mengembalikan satu baris data sebagai array
     }
-
+    
     // Method untuk menambahkan data penghapusan
     public function tambahPenghapusan($data)
     {

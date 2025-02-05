@@ -24,7 +24,7 @@
             <td><?= esc($hapus['penyebab']) ?></td>
             <td><?= date('d-m-Y', strtotime($hapus['tanggalhapus'])) ?></td>
             <td>
-                <a href="<?= base_url('admin/dataaset/viewdata/' . $hapus['idpenghapusan']) ?>" class="btn btn-success btn-sm">
+                <a href="<?= base_url('admin/dataaset/viewdata/' . $hapus['idhapus']) ?>" class="btn btn-success btn-sm">
                     <i class="fa fa-eye"></i>
                 </a>
                 
