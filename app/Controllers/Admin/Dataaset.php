@@ -238,7 +238,7 @@ class Dataaset extends BaseController
             'title' => 'View Data Penghapusan Aset',
             'dataaset' => $this->dataasetModel->findAll(),
             'penghapusan' => $penghapusan,
-            'content' => 'admin/datataset/viewpenghapusan',
+            'content' => 'admin/dataaset/viewpenghapusan',
         ];
 
         echo view('admin/layout/wrapper', $data);
