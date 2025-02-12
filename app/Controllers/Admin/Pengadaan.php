@@ -148,4 +148,33 @@ class Pengadaan extends BaseController
 
         return redirect()->to(base_url('admin/pengadaan'));
     }
+
+    public function update_status()
+{
+    $input = json_decode(file_get_contents('php://input'), true);
+    $idpengadaan = $input['idpengadaan'];
+    $status = $input['status'];
+
+    // Update status di tabel pengadaan
+    $this->pengadaanModel->update($idpengadaan, ['status' => $status]);
+
+    // Jika status disetujui, update jumlah di tabel dataaset
+    if ($status === 'Disetujui') {
+        $pengadaan = $this->pengadaanModel->find($idpengadaan);
+
+        if ($pengadaan) {
+            $dataasetModel = new \App\Models\Dataaset_model();
+
+            $dataaset = $dataasetModel->where('idbarang', $pengadaan['idbarang'])->first();
+            if ($dataaset) {
+                $dataasetModel->update($dataaset['id'], [
+                    'jumlah' => $dataaset['jumlah'] + $pengadaan['jumlah']
+                ]);
+            }
+        }
+    }
+
+    return $this->response->setJSON(['status' => 'success', 'message' => 'Status berhasil diperbarui.']);
+}
+
 }

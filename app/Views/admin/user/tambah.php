@@ -55,7 +55,7 @@
 					<label class="col-3">Password</label>
 					<div class="col-9">
 						<input type="password" name="password" class="form-control" placeholder="Password" value="<?= set_value('password') ?>" required>
-						<small class="text-danger">Minimal 6 karakter dan maksimal 32 karakter</small>
+						<small class="text-danger">Minimal 5 karakter dan maksimal 32 karakter</small>
 						<?php if (isset($validation) && $validation->getError('password')): ?>
 							<div class="text-danger"><?= $validation->getError('password'); ?></div>
 						<?php endif; ?>
@@ -106,13 +106,15 @@
 					</div>
 				</div>
 
-				<!-- Level Akses -->
 				<div class="form-group row">
 					<label class="col-3">Level</label>
 					<div class="col-9">
 						<select name="akses_level" class="form-control">
-							<option value="Admin" <?= set_value('akses_level') == 'Admin' ? 'selected' : ''; ?>>Admin</option>
-							<option value="User" <?= set_value('akses_level') == 'User' ? 'selected' : ''; ?>>User</option>
+							<?php foreach ($levels as $level): ?>
+								<option value="<?= esc($level->name) ?>" <?= $user['akses_level'] === $level->name ? 'selected' : '' ?>>
+									<?= esc($level->name) ?>
+								</option>
+							<?php endforeach; ?>
 						</select>
 					</div>
 				</div>

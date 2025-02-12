@@ -13,7 +13,9 @@ class User extends BaseController
     checklogin();
     $m_user = new User_model();
     $user   = $m_user->listing();
+    $m_level = new LevelModel();
     $total  = $m_user->total();
+    $levels = $m_level->findAll();
 
     // Start validasi
     if ($this->request->getMethod() === 'post' && $this->validate([
@@ -22,7 +24,7 @@ class User extends BaseController
         'nik'         => 'required|numeric',
         'nohp'        => 'required|numeric',
         'email'       => 'required|valid_email',
-        'password'    => 'required|min_length[6]|max_length[32]', // Validasi password
+        'password'    => 'required|min_length[5]|max_length[32]', // Validasi password
     ])) {
         // Menyimpan data
         $data = [
@@ -47,6 +49,7 @@ class User extends BaseController
     // Menampilkan halaman dengan data pengguna
     $data = [
         'title'   => 'Pengguna Website: ' . $total['total'],
+        'levels'  => $levels,
         'user'    => $user,
         'content' => 'admin/user/index',
     ];
@@ -78,7 +81,7 @@ class User extends BaseController
             ];
 
             if (!empty($this->request->getPost('password'))) {
-                $rules['password'] = 'min_length[6]|max_length[32]';
+                $rules['password'] = 'min_length[5]|max_length[32]';
             }
 
             if ($this->validate($rules)) {
