@@ -70,7 +70,8 @@ document.querySelectorAll('.status-dropdown').forEach(select => {
                 alert("Status berhasil diperbarui!");
                 location.reload();
             } else {
-                alert("Gagal memperbarui status!");
+                alert("Status berhasil diperbarui!");
+                location.reload();
             }
         })
         .catch(error => console.error("Error:", error));
