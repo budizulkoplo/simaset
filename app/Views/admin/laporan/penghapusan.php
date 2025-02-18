@@ -5,7 +5,9 @@ $session = \Config\Services::session();
 $konfigurasi  = new Konfigurasi_model;
 $site         = $konfigurasi->listing();
 $username = $session->get('nama');
+$tanggalCetak = date('d-m-Y');
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,118 +19,117 @@ $username = $session->get('nama');
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <style>
-    body {
-        font-family: Arial, sans-serif;
-    }
+        body {
+            font-family: Arial, sans-serif;
+        }
 
-    /* Header Laporan */
-    .print-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        position: relative;
-    }
-
-    .print-header img {
-        width: 80px;
-        height: auto;
-        position: absolute;
-        left: 0;
-    }
-
-    .header-text {
-        width: 100%;
-        text-align: center;
-    }
-
-    .header-text h2 {
-        margin: 5px 0;
-        font-size: 22px;
-    }
-
-    .header-text h4 {
-        margin: 5px 0;
-        font-size: 16px;
-        font-weight: normal;
-    }
-
-    /* Tabel */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    table, th, td {
-        border: 1px solid #000;
-    }
-
-    th, td {
-        padding: 8px;
-        text-align: center;
-    }
-
-    th {
-        background-color: #f0f0f0;
-    }
-
-    /* Form Filter */
-    .filter-form {
-        margin-bottom: 20px;
-        padding: 15px;
-        border-radius: 8px;
-    }
-
-    .form-control {
-        padding: 8px;
-        font-size: 14px;
-        width: 250px;
-        margin-right: 10px;
-    }
-
-    .btn {
-        padding: 8px 15px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        color: #fff;
-        border: none;
-    }
-
-    /* Media Print: Hanya Cetak Laporan */
-    @media print {
-        .filter-form,
-        .btn-print,
-        .btn,
-        footer {
-            display: none;
+        /* Header Laporan */
+        .print-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
         }
 
         .print-header img {
-            width: 60px;
+            width: 80px;
+            height: auto;
+            position: absolute;
+            left: 0;
         }
 
-        .print-header h2 {
-            font-size: 20px;
+        .header-text {
+            width: 100%;
+            text-align: center;
         }
 
-        body {
-            font-size: 12px;
+        .header-text h2 {
+            margin: 5px 0;
+            font-size: 22px;
         }
-    }
-</style>
+
+        .header-text h4 {
+            margin: 5px 0;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        /* Tabel */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        /* Sembunyikan input filter saat cetak */
+        @media print {
+            .dataTables_filter,
+            .dataTables_length,
+            .filter-form,
+            .btn-print,
+            .btn,
+            .main-footer,
+            .card-header,
+            .card-title,
+            .filter-input {
+                display: none;
+            }
+
+            .print-header img {
+                width: 60px;
+            }
+
+            .print-header h2 {
+                font-size: 20px;
+            }
+
+            body {
+                font-size: 12px;
+            }
+
+            /* Tampilkan judul kolom biasa saat cetak */
+            .print-column-title {
+                display: block !important;
+            }
+        }
+
+        /* Sembunyikan judul kolom biasa saat tidak mencetak */
+        .print-column-title {
+            display: none;
+        }
+    </style>
 
     <script>
         function printPage() {
+            // Tangkap nilai filter dari setiap kolom
+            var filters = [];
+            $('#tabel-penghapusan thead th').each(function(index) {
+                var filterValue = $(this).find('input').val();
+                if (filterValue) {
+                    var columnTitle = $('#tabel-penghapusan thead th').eq(index).text();
+                    filters.push(columnTitle + ': ' + filterValue);
+                }
+            });
+
+            // Tampilkan informasi filter di laporan cetak
+            if (filters.length > 0) {
+                var filterInfo = 'Filter yang digunakan: ' + filters.join(', ');
+                $('#filter-info').text(filterInfo).show();
+            }
+
             window.print();
         }
     </script>
@@ -140,47 +141,54 @@ $username = $session->get('nama');
         <img src="<?php echo base_url('assets/upload/image/'.$site['icon']) ?>" alt="Logo">
         <div class="header-text">
             <h2><?php echo $site['singkatan'] ?></h2>
-            <h4>Laporan Penghapusan Aset</h4>
-            <!-- <p>Periode Tahun: <?= htmlspecialchars($tahunpenghapusan ?? 'Semua Tahun') ?></p> -->
+            <p>Jalan Rm Hadi Sobeno no 5 Lemah Mendak Mijen Semarang. Jawa Tengah<br>
+            Kode POS: 52329 E Mail: berkahmandirikeramis@gmail.com</p>
         </div>
     </div>
+    <hr>
+    <p style="display: flex; justify-content: space-between;">
+        <span>Perihal: Laporan Penghapusan Aset</span>
+        <span>Semarang, <?= $tanggalCetak ?></span>
+    </p>
+
+    <!-- Informasi Filter -->
+    <p id="filter-info" style="display: none;"></p>
 
     <!-- Tabel Data Penghapusan -->
     <div class="table-responsive">
         <table id="tabel-penghapusan" class="table table-bordered">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Kode Aset</th>
-                    <th>Nama Aset</th>
-                    <th>Lokasi</th>
-                    <th>Tahun Penghapusan</th>
-                    <th>Jumlah Dihapus</th>
-                    <th>Penyebab</th>
+                    <th>
+                        <div class="print-column-title">No</div>
+                        <input type="text" placeholder="Cari No" class="filter-input" style="width:100%;" />
+                    </th>
+                    <th>
+                        <div class="print-column-title">Kode Aset</div>
+                        <input type="text" placeholder="Cari Kode Aset" class="filter-input" style="width:100%;" />
+                    </th>
+                    <th>
+                        <div class="print-column-title">Nama Aset</div>
+                        <input type="text" placeholder="Cari Nama Aset" class="filter-input" style="width:100%;" />
+                    </th>
+                    <th>
+                        <div class="print-column-title">Lokasi</div>
+                        <input type="text" placeholder="Cari Lokasi" class="filter-input" style="width:100%;" />
+                    </th>
+                    <th>
+                        <div class="print-column-title">Tahun Penghapusan</div>
+                        <input type="text" placeholder="Cari Tahun Penghapusan" class="filter-input" style="width:100%;" />
+                    </th>
+                    <th>
+                        <div class="print-column-title">Jumlah Dihapus</div>
+                        <input type="text" placeholder="Cari Jumlah Dihapus" class="filter-input" style="width:100%;" />
+                    </th>
+                    <th>
+                        <div class="print-column-title">Penyebab</div>
+                        <input type="text" placeholder="Cari Penyebab" class="filter-input" style="width:100%;" />
+                    </th>
                 </tr>
             </thead>
-            <thead>
-                <tr>
-                    <td>No</td>
-                    <td>Kode Aset</td>
-                    <td>Nama Aset</td>
-                    <td>Lokasi</td>
-                    <td>Tahun Penghapusan</td>
-                    <td>Jumlah Dihapus</td>
-                    <td>Penyebab</td>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <td>No</td>
-                    <td>Kode Aset</td>
-                    <td>Nama Aset</td>
-                    <td>Lokasi</td>
-                    <td>Tahun Penghapusan</td>
-                    <td>Jumlah Dihapus</td>
-                    <td>Penyebab</td>
-                </tr>
-            </tfoot>
             <tbody>
                 <?php if (!empty($dataPenghapusan)): ?>
                     <?php $no = 1; ?>
@@ -202,6 +210,8 @@ $username = $session->get('nama');
                 <?php endif; ?>
             </tbody>
         </table>
+        <hr>
+        <p>Dicetak oleh: <?= $username ?> pada <?= $tanggalCetak ?></p>
     </div>
 
 </body>
@@ -209,19 +219,14 @@ $username = $session->get('nama');
 
 <script>
     $(document).ready(function() {
-        // Tambahkan input filter di header setiap kolom
-        $('#tabel-penghapusan thead th').each(function() {
-            var title = $(this).text();
-            $(this).html('<input type="text" placeholder="Cari ' + title + '" style="width:100%;" />');
-        });
-
         // Inisialisasi DataTables tanpa paging
         var table = $('#tabel-penghapusan').DataTable({
             paging: false, // Nonaktifkan Paging
             ordering: true,
-            info: true,
+            info: false, // Nonaktifkan info footer
+            
             responsive: true,
-            lengthChange: false,
+            lengthChange: false, // Nonaktifkan "Show Entries"
             autoWidth: false,
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
