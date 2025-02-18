@@ -17,7 +17,7 @@ class Laporan extends BaseController
     $tahunpengadaan = $this->request->getGet('tahunpengadaan');
 
     // Query dasar dengan join ke tabel barang
-    $query = $m_aset->select('dataaset.*, barang.tahunperolehan, lokasiaset.namalokasi')
+    $query = $m_aset->select('dataaset.*, barang.tahunperolehan,barang.merk, lokasiaset.namalokasi')
         ->join('lokasiaset', 'lokasiaset.idlokasi = dataaset.idlokasi', 'left')
         ->join('barang', 'barang.idbarang = dataaset.idbarang', 'left'); // Join ke tabel barang
 

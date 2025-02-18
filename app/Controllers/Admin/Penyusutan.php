@@ -40,7 +40,10 @@ class Penyusutan extends BaseController
 
     // Ambil data aset berdasarkan ID
     $asetList = $this->penyusutanModel->getAsetWithPenyusutan();
-    $aset = array_values(array_filter($asetList, fn($item) => $item['idaset'] == $id));
+
+    $aset = array_values(array_filter($asetList, function($item) use ($id) {
+        return $item['idaset'] == $id;
+    }));
 
     if (empty($aset)) {
         session()->setFlashdata('error', 'Data aset tidak ditemukan.');
@@ -89,6 +92,7 @@ class Penyusutan extends BaseController
     $data = [
         'title' => 'Detail Penyusutan Aset',
         'aset' => $aset,
+        'printstatus'   => 'print',
         'detailPenyusutan' => $detailPenyusutan,
         'content' => 'admin/penyusutan/detail',
     ];

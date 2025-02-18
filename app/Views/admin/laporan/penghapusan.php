@@ -1,88 +1,153 @@
+<?php 
+use App\Models\Konfigurasi_model;
+
+$session = \Config\Services::session();
+$konfigurasi  = new Konfigurasi_model;
+$site         = $konfigurasi->listing();
+$username = $session->get('nama');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?></title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <style>
-        .filter-form {
-            margin-bottom: 20px;
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    /* Header Laporan */
+    .print-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .print-header img {
+        width: 80px;
+        height: auto;
+        position: absolute;
+        left: 0;
+    }
+
+    .header-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    .header-text h2 {
+        margin: 5px 0;
+        font-size: 22px;
+    }
+
+    .header-text h4 {
+        margin: 5px 0;
+        font-size: 16px;
+        font-weight: normal;
+    }
+
+    /* Tabel */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table, th, td {
+        border: 1px solid #000;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f0f0f0;
+    }
+
+    /* Form Filter */
+    .filter-form {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .form-control {
+        padding: 8px;
+        font-size: 14px;
+        width: 250px;
+        margin-right: 10px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+    }
+
+    /* Media Print: Hanya Cetak Laporan */
+    @media print {
+        .filter-form,
+        .btn-print,
+        .btn,
+        footer {
+            display: none;
         }
-        .filter-form .form-control {
-            max-width: 250px;
-            display: inline-block;
+
+        .print-header img {
+            width: 60px;
         }
-        .table-responsive {
-            margin-top: 20px;
+
+        .print-header h2 {
+            font-size: 20px;
         }
-    </style>
+
+        body {
+            font-size: 12px;
+        }
+    }
+</style>
 
     <script>
-        $(document).ready(function() {
-            // Inisialisasi Yearpicker (Pastikan jQuery UI sudah dimuat di template)
-            $("#tahunhapus").datepicker({
-                dateFormat: "yy",
-                changeYear: true,
-                showButtonPanel: true,
-                yearRange: "2000:<?= date('Y') ?>",
-                onClose: function(dateText, inst) {
-                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                    $(this).val(year);
-                },
-                beforeShow: function(input, inst) {
-                    if ((datestr = $(this).val()).length > 4) {
-                        year = datestr.substring(datestr.length - 4, datestr.length);
-                        $(this).datepicker('option', 'defaultDate', new Date(year, 1, 1));
-                        $(this).datepicker('setDate', new Date(year, 1, 1));
-                    }
-                }
-            });
-
-            // Hanya menampilkan tahun di input field
-            $("#tahunhapus").focus(function() {
-                $(".ui-datepicker-month").hide();
-                $(".ui-datepicker-calendar").hide();
-            });
-        });
-
         function printPage() {
             window.print();
         }
     </script>
 </head>
 <body>
-<div class="container mt-4">
-    <!-- Form Filter -->
-    <form action="<?= base_url('admin/laporan/penghapusan') ?>" method="get" class="mb-3">
-        <div class="row align-items-center">
-            <div class="col-md-4">
-                <label for="idlokasi" class="fw-bold">Lokasi:</label>
-                <select name="idlokasi" id="idlokasi" class="form-control">
-                    <option value="">Pilih Lokasi</option>
-                    <?php foreach ($dataLokasi as $lokasi): ?>
-                        <option value="<?= $lokasi['idlokasi'] ?>" <?= ($lokasi['idlokasi'] == $idlokasi) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($lokasi['namalokasi']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
 
-            <div class="col-md-3">
-                <label for="tahunhapus" class="fw-bold">Tahun Penghapusan:</label>
-                <input type="text" name="tahunhapus" id="tahunhapus" class="form-control" value="<?= $tahunhapus ?? '' ?>" placeholder="Pilih Tahun">
-            </div>
-
-            <div class="col-md-3 mt-4">
-                <button type="submit" class="btn btn-primary">Filter</button>
-                <a href="<?= base_url('admin/laporan/penghapusan') ?>" class="btn btn-secondary">Reset</a>
-            </div>
+    <!-- Header Laporan -->
+    <div class="print-header">
+        <img src="<?php echo base_url('assets/upload/image/'.$site['icon']) ?>" alt="Logo">
+        <div class="header-text">
+            <h2><?php echo $site['singkatan'] ?></h2>
+            <h4>Laporan Penghapusan Aset</h4>
+            <!-- <p>Periode Tahun: <?= htmlspecialchars($tahunpenghapusan ?? 'Semua Tahun') ?></p> -->
         </div>
-    </form>
+    </div>
 
     <!-- Tabel Data Penghapusan -->
     <div class="table-responsive">
-        <table class="table table-bordered table-striped">
+        <table id="tabel-penghapusan" class="table table-bordered">
             <thead>
                 <tr>
                     <th>No</th>
@@ -94,6 +159,28 @@
                     <th>Penyebab</th>
                 </tr>
             </thead>
+            <thead>
+                <tr>
+                    <td>No</td>
+                    <td>Kode Aset</td>
+                    <td>Nama Aset</td>
+                    <td>Lokasi</td>
+                    <td>Tahun Penghapusan</td>
+                    <td>Jumlah Dihapus</td>
+                    <td>Penyebab</td>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td>No</td>
+                    <td>Kode Aset</td>
+                    <td>Nama Aset</td>
+                    <td>Lokasi</td>
+                    <td>Tahun Penghapusan</td>
+                    <td>Jumlah Dihapus</td>
+                    <td>Penyebab</td>
+                </tr>
+            </tfoot>
             <tbody>
                 <?php if (!empty($dataPenghapusan)): ?>
                     <?php $no = 1; ?>
@@ -116,6 +203,40 @@
             </tbody>
         </table>
     </div>
-</div>
+
 </body>
 </html>
+
+<script>
+    $(document).ready(function() {
+        // Tambahkan input filter di header setiap kolom
+        $('#tabel-penghapusan thead th').each(function() {
+            var title = $(this).text();
+            $(this).html('<input type="text" placeholder="Cari ' + title + '" style="width:100%;" />');
+        });
+
+        // Inisialisasi DataTables tanpa paging
+        var table = $('#tabel-penghapusan').DataTable({
+            paging: false, // Nonaktifkan Paging
+            ordering: true,
+            info: true,
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
+            },
+            initComplete: function () {
+                // Terapkan filter per kolom
+                this.api().columns().every(function() {
+                    var that = this;
+                    $('input', this.header()).on('keyup change clear', function() {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            }
+        });
+    });
+</script>

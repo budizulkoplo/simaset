@@ -211,8 +211,13 @@ $(document).ready(function(){
       "paging": true,
       "lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]],
       "lengthChange": true,
-      "autoWidth": false
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      "autoWidth": false,
+      language: {
+        url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
+      }
+    }
+  
+  ).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,

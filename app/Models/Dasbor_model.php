@@ -17,6 +17,32 @@ class Dasbor_model extends Model
 
         return $query->getNumRows();
     }
+
+    public function dataaset()
+    {
+        $builder = $this->db->table('dataaset');
+        $query   = $builder->get();
+
+        return $query->getNumRows();
+    }
+
+    public function pengadaan()
+    {
+        $builder = $this->db->table('pengadaan');
+        $query   = $builder->get();
+
+        return $query->getNumRows();
+    }
+
+    public function penghapusan()
+    {
+        $builder = $this->db->table('penghapusan');
+        $query   = $builder->get();
+
+        return $query->getNumRows();
+    }
+
+    
     // transaksi
     
 }
